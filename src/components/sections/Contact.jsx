@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { RevealOnScroll } from "../RevealOnScroll";
 import emailjs from "@emailjs/browser";
 
@@ -9,27 +9,25 @@ export const Contact = () => {
     message: "",
   });
   const form = useRef();
+
+  useEffect(() => {
+    emailjs.init("ZaqN0AD1BDw7af6Ud"); // initialize مرة واحدة
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("Form submitted", e);
-    // emailjs.init({ publicKey: "ZaqN0AD1BDw7af6Ud" });
+
     emailjs
-      .sendForm("service_jhlqz1b", "template_vx1wxns", form.current, {
-        publicKey: "ZaqN0AD1BDw7af6Ud",
+      .sendForm("service_jhlqz1b", "template_vx1wxns", form.current)
+      .then(() => {
+        console.log("SUCCESS!");
+        alert("Message Sent Successfully!");
+        setFormData({ name: "", email: "", message: "" }); // تصفير البيانات بعد الارسال
       })
-      // .then((result) => {
-      //   alert("Message Sent!");
-      //   setFormData({ name: "", email: "", message: "" });
-      // })
-      .then(
-        () => {
-          console.log("SUCCESS!");
-        },
-        (error) => {
-          console.log("FAILED...", error);
-        }
-      );
-    // .catch(() => alert("Oops! Something went wrong. Please try again."));
+      .catch((error) => {
+        console.error("FAILED...", error);
+        alert("Oops! Something went wrong. Please try again.");
+      });
   };
 
   return (
@@ -40,7 +38,6 @@ export const Contact = () => {
       <RevealOnScroll>
         <div className="px-4 w-full min-w-[300px] md:w-[500px] sm:w-2/3 p-6">
           <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent text-center">
-            {" "}
             Get In Touch
           </h2>
           <form
